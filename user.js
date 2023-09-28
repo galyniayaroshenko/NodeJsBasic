@@ -1,16 +1,16 @@
 const users = [
-	{
-		id: 1,
-		name: 'Ann',
-		email: 'ann@google.com',
-		hobbies: ['books', 'sport', 'dancing'],
-	},
-	{
-		id: 2,
-		name: 'Ben',
-		email: 'ben@google.com',
-		hobbies: ['series', 'sport'],
-	},
+  {
+    id: 1,
+    name: 'Ann',
+    email: 'ann@google.com',
+    hobbies: ['books', 'sport', 'dancing'],
+  },
+  {
+    id: 2,
+    name: 'Ben',
+    email: 'ben@google.com',
+    hobbies: ['series', 'sport'],
+  },
 ];
 
 function getUsers() {
@@ -18,7 +18,7 @@ function getUsers() {
 }
 
 function createUser(newUser) {
-	if (!newUser.name || !newUser.email) {
+  if (!newUser.name || !newUser.email) {
     throw new Error('Name and email are required.');
   }
   const user = {
@@ -39,7 +39,7 @@ function deleteUser(userId) {
 }
 
 function updateUser(userId, updatedData) {
-	const user = users.find((user) => user.id === userId);
+  const user = users.find((user) => user.id === userId);
   if (!user) {
     throw new Error('User not found.');
   }
@@ -48,11 +48,11 @@ function updateUser(userId, updatedData) {
 }
 
 function getUserById(userId) {
-	const user = users.find((user) => user.id === userId);
-	if (!user) {
-		throw new Error('User not found.');
-	}
-	return user;
+  const user = users.find((user) => user.id === userId);
+  if (!user) {
+    throw new Error('User not found.');
+  }
+  return user;
 }
 
 function getUsersWithoutHobbies() {
@@ -63,8 +63,8 @@ function getUsersWithoutHobbies() {
 module.exports = {
   getUsers,
   createUser,
-	deleteUser,
-	updateUser,
-	getUserById,
-	getUsersWithoutHobbies,
+  deleteUser,
+  updateUser,
+  getUserById,
+  getUsersWithoutHobbies,
 };

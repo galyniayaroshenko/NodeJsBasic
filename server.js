@@ -111,16 +111,16 @@ const server = http.createServer((req, res) => {
 
     const userHobbies = hobbyRoutes.getUserHobbies(userId);
 
-		// Add caching headers
-		res.writeHead(200, {
-			'Content-Type': 'application/json',
-			'Cache-Control': 'max-age=3600', // Cache for 1 hour (adjust as needed)
-		});
+    // Add caching headers
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'max-age=3600', // Cache for 1 hour (adjust as needed)
+    });
 
-		// Add HATEOAS link to retrieve a list of hobbies for the user
-		const userLink = `<${requestUrl}>; rel="user-hobbies"; type="application/json"`;
-		res.setHeader('Link', userLink);
-	
+    // Add HATEOAS link to retrieve a list of hobbies for the user
+    const userLink = `<${requestUrl}>; rel="user-hobbies"; type="application/json"`;
+    res.setHeader('Link', userLink);
+    
     res.end(JSON.stringify(userHobbies));
   } else {
     res.writeHead(404);
