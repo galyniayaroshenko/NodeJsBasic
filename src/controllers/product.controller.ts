@@ -1,16 +1,18 @@
 import { Request, Response } from 'express';
-import { ProductService } from '../services/product.service';
+import { getRepository } from 'typeorm';
+import { Product } from '../entities/product.entity';
 
-const productService = new ProductService();
+const productRepository = getRepository(Product);
 
-export const getAllProducts = (req: Request, res: Response): void => {
-  const products = productService.getAllProducts();
+export const getAllProducts = async (req: Request, res: Response): Promise<void> => {
+  const products = await productRepository.find();
   res.json(products);
 };
 
-export const getProductById = (req: Request, res: Response): void => {
-  const productId = req.params.productId;
-  const product = productService.getProductById(productId);
+export const getProductById = async (req: Request, res: Response): Promise<void> => {
+  const productId = req.params.productId as string;
+  const product = await productRepository.findOneById(productId);
+
   if (!product) {
     res.status(404).json({ message: 'Product not found' });
   } else {
