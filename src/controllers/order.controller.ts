@@ -1,15 +1,12 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
-import { Order } from '../entities/order.entity';
+import OrderModel from '../models/order.model';
 
-const orderRepository = getRepository(Order);
-
-export const createOrder = async (req: Request, res: Response): Promise<void> => {
+export const createOrder = async (req: Request, res: Response) => {
   const orderData = req.body;
 
   try {
-    const newOrder = orderRepository.create(orderData);
-    await orderRepository.save(newOrder);
+    const newOrder = new OrderModel(orderData);
+    await newOrder.save();
 
     res.status(201).json({ message: 'Order created successfully', order: newOrder });
   } catch (error: any) {
@@ -17,14 +14,11 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-export const getOrdersByUserId = async (req: Request, res: Response): Promise<void> => {
+export const getOrdersByUserId = async (req: Request, res: Response) => {
   const userId = req.params.userId;
 
   try {
-    const orders = await orderRepository
-      .createQueryBuilder('order') // Start a query builder for the 'Order' entity
-      .where('order.userId = :userId', { userId }) // Add a where condition
-      .getMany(); // Execute the query and get the result
+    const orders = await OrderModel.find({ userId });
 
     res.json(orders);
   } catch (error: any) {
@@ -32,11 +26,11 @@ export const getOrdersByUserId = async (req: Request, res: Response): Promise<vo
   }
 };
 
-export const getOrderById = async (req: Request, res: Response): Promise<void> => {
+export const getOrderById = async (req: Request, res: Response) => {
   const orderId = req.params.orderId;
 
   try {
-    const order = await orderRepository.findOneById(orderId);
+    const order = await OrderModel.findById(orderId);
 
     if (!order) {
       res.status(404).json({ message: 'Order not found' });

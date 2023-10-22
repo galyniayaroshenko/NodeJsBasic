@@ -1,16 +1,12 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
-import { Cart } from '../entities/cart.entity';
-import { cartSchema } from '../utils/validation';
-
-const cartRepository = getRepository(Cart);
+import CartModel from '../models/cart.model';
 
 export const createCartController = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const cart = cartRepository.create({ user: { id: userId } });
+    const cart = new CartModel({ user: userId });
 
-    await cartRepository.save(cart);
+    await cart.save();
 
     res.status(201).json(cart);
   } catch (error) {
@@ -20,14 +16,8 @@ export const createCartController = async (req: Request, res: Response) => {
 
 export const getCartByUserIdController = async (req: Request, res: Response) => {
   try {
-    const userId: string = req.params.userId;
-    const cartRepository = getRepository(Cart);
-
-    // Using QueryBuilder to find the cart by user ID
-    const cart = await cartRepository
-      .createQueryBuilder('cart')
-      .where('cart.userId = :userId', { userId })
-      .getOne();
+    const userId = req.params.userId;
+    const cart = await CartModel.findOne({ user: userId });
 
     if (cart) {
       res.json(cart);
@@ -43,26 +33,9 @@ export const updateCartController = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
     const updatedCart = req.body;
-    const cartRepository = getRepository(Cart);
-
-    const { error } = cartSchema.validate(updatedCart);
-
-    if (error) {
-      return res.status(400).json({ error: error.details.map((detail) => detail.message) });
-    }
-
-    // Using QueryBuilder to find the cart by user ID
-    const cart = await cartRepository
-      .createQueryBuilder('cart')
-      .where('cart.userId = :userId', { userId })
-      .getOne();
+    const cart = await CartModel.findOneAndUpdate({ user: userId }, updatedCart, { new: true });
 
     if (cart) {
-      cart.isDeleted = updatedCart.isDeleted;
-      cart.user = updatedCart.user;
-      cart.items = updatedCart.items;
-      await cartRepository.save(cart);
-
       res.json(cart);
     } else {
       res.status(404).json({ error: 'Cart not found' });
@@ -75,17 +48,9 @@ export const updateCartController = async (req: Request, res: Response) => {
 export const emptyCartController = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const cartRepository = getRepository(Cart);
+    const result = await CartModel.deleteOne({ user: userId });
 
-    // Using QueryBuilder to find the cart by user ID
-    const cart = await cartRepository
-      .createQueryBuilder('cart')
-      .where('cart.userId = :userId', { userId })
-      .getOne();
-
-    if (cart) {
-      await cartRepository.remove(cart);
-
+    if (result.deletedCount && result.deletedCount > 0) {
       res.json({ message: 'Cart emptied successfully' });
     } else {
       res.status(404).json({ error: 'Cart not found' });

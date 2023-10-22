@@ -1,41 +1,85 @@
-import { CartItemEntity, cart } from './cart.model';
+import { Schema, Document, model } from 'mongoose';
+import { IOrderItem, orderItemSchema } from './order-item.model';
+import { ObjectId } from 'bson';
 
-type ORDER_STATUS = 'created' | 'completed';
-
-export interface OrderEntity {
-  id: string, // uuid
+export interface IOrder extends Document {
   userId: string;
   cartId: string;
-  items: CartItemEntity[] // products from CartEntity
+  items: IOrderItem[];
   payment: {
-    type: string,
-    address?: any,
-    creditCard?: any,
-  },
+    type: string;
+    address?: any;
+    creditCard?: any;
+  };
   delivery: {
-    type: string,
-    address: any,
-  },
-  comments: string,
-  status: ORDER_STATUS;
+    type: string;
+    address: any;
+  };
+  comments: string;
+  status: string;
   total: number;
 }
 
-export const order: OrderEntity = {
-  id: 'dffd6fa8-be6b-47f6-acff-455612620ac2',
-  userId: '0fe36d16-49bc-4aab-a227-f84df899a6cb',
-  cartId: '',
-  items: cart.items, 
+const orderSchema = new Schema<IOrder>({
+  userId: { type: ObjectId as any, ref: 'User' },
+  cartId: { type: ObjectId as any, ref: 'Cart' },
+  items: [orderItemSchema],
   payment: {
-    type: 'paypal',
-    address: undefined,
-    creditCard: undefined
+    type: String,
+    address: Schema.Types.Mixed,
+    creditCard: Schema.Types.Mixed,
   },
   delivery: {
-    type: 'post',
-    address: undefined
+    type: String,
+    address: Schema.Types.Mixed,
   },
-  comments: '',
-  status: 'created',
-  total: 2,
-}
+  comments: String,
+  status: String,
+  total: Number,
+});
+
+const OrderModel = model<IOrder>('Order', orderSchema);
+
+export default OrderModel;
+
+// import { CartItemEntity, cart } from './cart.model';
+
+// type ORDER_STATUS = 'created' | 'completed';
+
+// export interface OrderEntity {
+//   id: string, // uuid
+//   userId: string;
+//   cartId: string;
+//   items: CartItemEntity[] // products from CartEntity
+//   payment: {
+//     type: string,
+//     address?: any,
+//     creditCard?: any,
+//   },
+//   delivery: {
+//     type: string,
+//     address: any,
+//   },
+//   comments: string,
+//   status: ORDER_STATUS;
+//   total: number;
+// }
+
+// export const order: OrderEntity = {
+//   id: 'dffd6fa8-be6b-47f6-acff-455612620ac2',
+//   userId: '0fe36d16-49bc-4aab-a227-f84df899a6cb',
+//   cartId: '',
+//   items: cart.items, 
+//   payment: {
+//     type: 'paypal',
+//     address: undefined,
+//     creditCard: undefined
+//   },
+//   delivery: {
+//     type: 'post',
+//     address: undefined
+//   },
+//   comments: '',
+//   status: 'created',
+//   total: 2,
+// }
