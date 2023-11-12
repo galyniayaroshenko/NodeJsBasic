@@ -1,9 +1,9 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 export interface IBook {
-    title: string,
-    text: string,
-    author_id: string,
+    title: string;
+    text: string;
+    author_id: string;
 }
 
 const BookSchema = new Schema<IBook>({
@@ -12,5 +12,5 @@ const BookSchema = new Schema<IBook>({
     author_id: { type: String, default: null }
 });
 
-const Book = model("book", BookSchema);
+const Book = model('book', BookSchema);
 export default Book;

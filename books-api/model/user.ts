@@ -1,15 +1,15 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { Document } from 'mongoose';
 
 interface IUser {
     id: string;
-    first_name: string,
-    last_name: string,
-    email: string,
-    password: string,
-    role: 'admin' | 'user'
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    role: 'admin' | 'user';
 }
 
 export const UserSchema = new Schema<IUser>({
@@ -29,5 +29,5 @@ UserSchema.pre('save', async function (next) {
     next();
 });
 
-const User = model("user", UserSchema);
+const User = model('user', UserSchema);
 export default User;

@@ -1,23 +1,23 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
 export interface CurrentUser {
-    user_id: string,
-    email: string,
-    role: string
+    user_id: string;
+    email: string;
+    role: string;
 }
 
 export async function verifyToken (req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-        return res.status(401).send("Token is required");
+        return res.status(401).send('Token is required');
     }
 
     const [tokenType, token] = authHeader.split(' ');
 
     if (tokenType !== 'Bearer') {
-        return res.status(403).send("Invalid Token");
+        return res.status(403).send('Invalid Token');
     }
 
     try {
@@ -25,7 +25,7 @@ export async function verifyToken (req: Request, res: Response, next: NextFuncti
 
         req.user = user;
     } catch (err) {
-        return res.status(401).send("Invalid Token");
+        return res.status(401).send('Invalid Token');
     }
     return next();
 }

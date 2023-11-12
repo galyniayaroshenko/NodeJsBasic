@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
-import Book, { IBook } from "../model/book";
+import Book, { IBook } from '../model/book';
 
-declare module "express" {
+declare module 'express' {
     interface Request {
         book: IBook;
     }
@@ -17,17 +17,17 @@ export async function isBookAuthor(req: Request, res: Response, next: NextFuncti
         const oldBook = await Book.findById(bookId);
 
         if (!oldBook) {
-            return res.status(404).send("Book not found");
+            return res.status(404).send('Book not found');
         }
 
         if (oldBook.author_id !== req.user.user_id) {
-            return res.status(401).send("This book is relared to another author");
+            return res.status(401).send('This book is relared to another author');
         }
 
         req.book = oldBook;
         next();
     } catch (err) {
         console.error(err);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send('Internal Server Error');
     }
 }
